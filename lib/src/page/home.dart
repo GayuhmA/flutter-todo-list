@@ -3,10 +3,15 @@ import 'package:to_do_list_app/src/constants/colors.dart';
 import 'package:to_do_list_app/src/model/todo.dart';
 import 'package:to_do_list_app/src/widgets/to_do_item.dart';
 
-class Home extends StatelessWidget{
-  Home ({super.key});
-  final todosList = ToDo.todoList();
+class Home extends StatefulWidget{
+  const Home ({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final todosList = ToDo.todoList();
 
   @override
   Widget build(BuildContext context){
@@ -31,7 +36,10 @@ class Home extends StatelessWidget{
                         ),),
                       ),
                       for (ToDo todo in todosList )
-                      ToDoItem(todo: todo),
+                      ToDoItem(todo: todo, 
+                      onToDoChanged: _handleToDoChange,
+                      onDeleteItem: _deleteToDoItem,
+                      ),
                       
                     ],
                   ),
@@ -77,6 +85,18 @@ class Home extends StatelessWidget{
         ],
       ),
     );
+  }
+
+  void _handleToDoChange(ToDo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+
+  void _deleteToDoItem(String id) {
+    setState(() {
+      todosList.removeWhere((item) => item.id == id);
+    });
   }
 
   Widget searchBox() {
